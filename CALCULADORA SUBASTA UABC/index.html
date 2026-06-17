@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Puntaje - Subasta Premium UABC</title>
+    <style>
+        /* Corrección universal para que los tamaños no desborden en celular */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --uabc-green: #00723F;
+            --uabc-gold: #FFC000;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            max-height: 120px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .subtitle {
+            color: var(--uabc-gold);
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+            margin-bottom: 30px;
+        }
+
+        th {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 8px;
+            text-align: center;
+        }
+
+        tr {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        td {
+            background: rgba(15, 23, 42, 0.4);
+            padding: 12px 8px;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        td:first-child {
+            border-left: 1px solid var(--border-color);
+            border-radius: 12px 0 0 12px;
+        }
+
+        td:last-child {
+            border-right: 1px solid var(--border-color);
+            border-radius: 0 12px 12px 0;
+        }
+
+        input[type="text"], input[type="number"] {
+            background: #0f172a;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 8px;
+            border-radius: 8px;
+            width: 100%;
+            outline: none;
+            text-align: center;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        }
+
+        .btn {
+            font-weight: 600;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--uabc-green) 0%, #10b981 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+            white-space: nowrap;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+            padding: 8px 14px;
+            font-size: 13px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            width: 100%;
+        }
+
+        .btn-delete:hover {
+            background: var(--accent-red);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .btn-calc {
+            background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%);
+            color: white;
+            width: 100%;
+            justify-content: center;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-calc:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .extra-section {
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 16px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .extra-title {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .radio-group {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .radio-label input {
+            accent-color: var(--accent-blue);
+            transform: scale(1.1);
+        }
+
+        .results {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 30px;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
+        }
+
+        .results-grid {
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .final-score {
+            text-align: center;
+        }
+
+        .final-score .lbl {
+            font-size: 13px;
+            color: var(--uabc-gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+        }
+
+        .final-score .val {
+            font-size: 42px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FFC000 0%, #FFF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 192, 0, 0.2);
+        }
+
+        /* --- REGLAS EXCLUSIVAS PARA CELULAR (RESPONSIVE) --- */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px 10px;
+            }
+
+            .container {
+                padding: 20px 12px;
+                border-radius: 16px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            .logo {
+                max-height: 90px;
+            }
+
+            th, td {
+                padding: 8px 4px;
+                font-size: 12px;
+            }
+
+            input[type="text"], input[type="number"] {
+                font-size: 13px;
+                padding: 8px 4px;
+            }
+
+            /* Esconde el texto de borrar para ganar espacio, dejando solo el emoji */
+            .text-delete {
+                display: none;
+            }
+
+            .btn-delete {
+                padding: 8px 4px;
+            }
+
+            .btn-add {
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                display: inline-flex;
+                text-align: left;
+            }
+
+            .final-score .val {
+                font-size: 32px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-section">
+        <img src="image_37bcac.png" alt="Logo UABC" class="logo">
+        <h2>Calculadora de Puntaje</h2>
+        <div class="subtitle">Subasta UABC</div>
+    </div>
+    
+    <div class="top-bar">
+        <span class="section-title">Materias</span>
+        <button class="btn btn-add" onclick="agregarMateria()">➕ Añadir</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align: left; width: 45%;">Materia</th>
+                <th style="width: 20%;">Créd.</th>
+                <th style="width: 20%;">Calif.</th>
+                <th style="width: 15%;">Acción</th>
+            </tr>
+        </thead>
+        <tbody id="materias-body">
+            <tr>
+                <td><input type="text" placeholder="Ej. Dermatología" value="Materia 1" style="text-align: left;"></td>
+                <td><input type="number" class="creditos" min="0" placeholder="0"></td>
+                <td><input type="number" class="calificacion" min="0" max="100" placeholder="0"></td>
+                <td><button class="btn btn-delete" onclick="eliminarMateria(this)"><span>🗑️</span><span class="text-delete"> Borrar</span></button></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="Materia 2" style="text-align: left;"></td>
+                <td><input type="number" class="creditos" min="0" placeholder="0"></td>
+                <td><input type="number" class="calificacion" min="0" max="100" placeholder="0"></td>
+                <td><button class="btn btn-delete" onclick="eliminarMateria(this)"><span>🗑️</span><span class="text-delete"> Borrar</span></button></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="Materia 3" style="text-align: left;"></td>
+                <td><input type="number" class="creditos" min="0" placeholder="0"></td>
+                <td><input type="number" class="calificacion" min="0" max="100" placeholder="0"></td>
+                <td><button class="btn btn-delete" onclick="max-width: inline-block; eliminarMateria(this)"><span>🗑️</span><span class="text-delete"> Borrar</span></button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="extra-section">
+        <div class="extra-title">¿Aplicaste examen extraordinario en este periodo?</div>
+        <div class="radio-group">
+            <label class="radio-label">
+                <input type="radio" id="extra-si" name="extra" value="si">
+                <span>Sí (Solo promedio × 100)</span>
+            </label>
+            <label class="radio-label">
+                <input type="radio" id="extra-no" name="extra" value="no" checked>
+                <span>No (+10,000 pts Alumno Regular)</span>
+            </label>
+        </div>
+    </div>
+
+    <button class="btn btn-calc" onclick="calcularSubasta()">⚡ Calcular Puntaje Final</button>
+
+    <div class="results" id="resultados" style="display: none;">
+        <div class="results-grid">
+            <div class="stat-box">
+                <div class="stat-val" id="res-creditos">0</div>
+                <div class="stat-lbl">Créditos Totales</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val" id="res-promedio">0.00</div>
+                <div class="stat-lbl">Promedio</div>
+            </div>
+        </div>
+        <div class="final-score">
+            <div class="lbl">Puntaje Subasta UABC</div>
+            <div class="val" id="res-puntaje">0</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function agregarMateria() {
+        const tbody = document.getElementById('materias-body');
+        const numMaterias = tbody.children.length + 1;
+        const tr = document.createElement('tr');
+        
+        tr.innerHTML = `
+            <td><input type="text" value="Materia ${numMaterias}" style="text-align: left;"></td>
+            <td><input type="number" class="creditos" min="0" placeholder="0"></td>
+            <td><input type="number" class="calificacion" min="0" max="100" placeholder="0"></td>
+            <td><button class="btn btn-delete" onclick="eliminarMateria(this)"><span>🗑️</span><span class="text-delete"> Borrar</span></button></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function eliminarMateria(boton) {
+        const fila = boton.closest('tr');
+        fila.style.animation = "fadeIn 0.2s ease reverse forwards";
+        setTimeout(() => fila.remove(), 200);
+    }
+
+    function calcularSubasta() {
+        const filas = document.querySelectorAll('#materias-body tr');
+        let sumaCreditos = 0;
+        let sumaProductos = 0;
+
+        filas.forEach(fila => {
+            const creditosInput = fila.querySelector('.creditos');
+            const calificacionInput = fila.querySelector('.calificacion');
+
+            if (creditosInput && calificacionInput) {
+                const creditos = parseFloat(creditosInput.value);
+                const calificacion = parseFloat(calificacionInput.value);
+
+                if (!isNaN(creditos) && !isNaN(calificacion) && creditos > 0) {
+                    sumaCreditos += creditos;
+                    sumaProductos += (creditos * calificacion);
+                }
+            }
+        });
+
+        if (sumaCreditos === 0) {
+            alert("Por favor, ingresa al menos los créditos y la calificación de una materia.");
+            return;
+        }
+
+        const promedioPonderado = sumaProductos / sumaCreditos;
+        let puntaje = promedioPonderado * 100;
+
+        const hizoExtra = document.querySelector('input[name="extra"]:checked').value;
+        if (hizoExtra === "no") {
+            puntaje += 10000;
+        }
+
+        document.getElementById('res-creditos').innerText = sumaCreditos;
+        document.getElementById('res-promedio').innerText = promedioPonderado.toFixed(2);
+        document.getElementById('res-puntaje').innerText = Math.round(puntaje).toLocaleString('en-US');
+        
+        const resDiv = document.getElementById('resultados');
+        resDiv.style.display = 'block';
+        resDiv.style.animation = 'fadeIn 0.5s ease forwards';
+    }
+</script>
+
+</body>
+</html>
